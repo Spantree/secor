@@ -34,11 +34,10 @@ import java.util.Arrays;
  * @author Pawel Garbacki (pawel@pinterest.com)
  */
 public class FileUtil {
-    private static Configuration mConf = new Configuration();
+    private static Configuration mConf = new Configuration(true);
 
     public static void configure(SecorConfig config) {
         if (config != null) {
-            mConf = new Configuration();
             if (config.getAwsAccessKey().isEmpty() != config.getAwsSecretKey().isEmpty()) {
                 throw new IllegalArgumentException(
                     "Must specify both aws.access.key and aws.secret.key or neither.");
