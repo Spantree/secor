@@ -103,9 +103,14 @@
             <artifactId>hadoop-common</artifactId>
             <version>2.7.0</version>
             <exclusions>
+                <!-- jets3t includes older versions which conflict with hadoop-aws -->
                 <exclusion>
-                    <groupId>net.java.dev.jets3t</groupId>
-                    <artifactId>jets3t</artifactId>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpcore</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

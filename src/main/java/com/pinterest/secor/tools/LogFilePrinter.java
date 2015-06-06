@@ -16,6 +16,7 @@
  */
 package com.pinterest.secor.tools;
 
+import com.google.common.collect.Lists;
 import com.pinterest.secor.util.FileUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -28,7 +29,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
 
 import java.io.FileNotFoundException;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * Log file printer displays the content of a log file.
@@ -47,10 +48,11 @@ public class LogFilePrinter {
     }
 
     public void print(String path) throws Exception {
+        path = path.replaceAll("^s3://", "s3a://");
         final FileSystem fileSystem = FileUtil.getFileSystem(path);
         Path fsPath = new Path(path);
         FileStatus[] fileList = fileSystem.globStatus(fsPath);
-        if (fileList.length == 0) {
+        if (fileList == null || fileList.length == 0) {
             throw new FileNotFoundException("unable to find file '" + path + "'");
         }
         for (FileStatus fileStatus : fileList) {
@@ -59,11 +61,11 @@ public class LogFilePrinter {
                     System.err.println("set -recursive to read directory '" + fsPath + "'");
                     continue;
                 }
-                // read the remote iterator completely before reading files to prevent it
-                // from going stale.
+                // read the remote iterator completely into a list before reading files to
+                // prevent it from going stale.
                 RemoteIterator<LocatedFileStatus> recursiveFilesIterator =
                     fileSystem.listFiles(fileStatus.getPath(), true);
-                Vector<FileStatus> recursiveFileList = new Vector<FileStatus>();
+                List<FileStatus> recursiveFileList = Lists.<FileStatus>newArrayList();
                 while (recursiveFilesIterator.hasNext()) {
                     FileStatus recursiveFileStatus = recursiveFilesIterator.next();
                     if (recursiveFileStatus.isFile()) {

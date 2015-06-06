@@ -65,8 +65,8 @@ public class Uploader {
     }
 
     private Future<?> upload(LogFilePath localPath) throws Exception {
-        String s3Prefix = "s3a://" + mConfig.getS3Bucket() + "/" + mConfig.getS3Path();
-        LogFilePath s3Path = new LogFilePath(s3Prefix, localPath.getTopic(),
+        LogFilePath s3Path = new LogFilePath(mConfig.getS3Prefix(),
+                                             localPath.getTopic(),
                                              localPath.getPartitions(),
                                              localPath.getGeneration(),
                                              localPath.getKafkaPartition(),

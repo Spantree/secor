@@ -121,9 +121,8 @@ public class PartitionFinalizer {
     }
 
     private NavigableSet<Calendar> getPartitions(String topic) throws IOException, ParseException {
-        final String s3Prefix = "s3a://" + mConfig.getS3Bucket() + "/" + mConfig.getS3Path();
         String[] partitions = {"dt="};
-        LogFilePath logFilePath = new LogFilePath(s3Prefix, topic, partitions,
+        LogFilePath logFilePath = new LogFilePath(mConfig.getS3Prefix(), topic, partitions,
             mConfig.getGeneration(), 0, 0, mFileExtension);
         String parentDir = logFilePath.getLogFileParentDir();
         String[] partitionDirs = FileUtil.list(parentDir);
@@ -147,13 +146,12 @@ public class PartitionFinalizer {
             ParseException, InterruptedException {
         NavigableSet<Calendar> partitionDates =
             getPartitions(topic).headSet(calendar, true).descendingSet();
-        final String s3Prefix = "s3a://" + mConfig.getS3Bucket() + "/" + mConfig.getS3Path();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         for (Calendar partition : partitionDates) {
             String partitionStr = format.format(partition.getTime());
             String[] partitions = {"dt=" + partitionStr};
-            LogFilePath logFilePath = new LogFilePath(s3Prefix, topic, partitions,
+            LogFilePath logFilePath = new LogFilePath(mConfig.getS3Prefix(), topic, partitions,
                 mConfig.getGeneration(), 0, 0, mFileExtension);
             String logFileDir = logFilePath.getLogFileDir();
             assert FileUtil.exists(logFileDir) : "FileUtil.exists(" + logFileDir + ")";

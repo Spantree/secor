@@ -45,6 +45,8 @@ public class FileUtil {
             if (!config.getAwsAccessKey().isEmpty()) {
                 mConf.set(Constants.ACCESS_KEY, config.getAwsAccessKey());
                 mConf.set(Constants.SECRET_KEY, config.getAwsSecretKey());
+                mConf.set("fs.s3n.awsAccessKeyId", config.getAwsAccessKey());
+                mConf.set("fs.s3n.awsSecretAccessKey", config.getAwsSecretKey());
             }
         }
     }
